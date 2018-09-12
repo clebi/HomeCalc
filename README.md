@@ -1,2 +1,2 @@
 # HomeCalc
-Various computation for real estate loands
+Various computation for real estate loans
