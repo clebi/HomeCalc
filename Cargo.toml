@@ -5,3 +5,4 @@ authors = ["Clément Bizeau <clement.bizeau4@gmail.com>"]
 
 [dependencies]
 clap = "2.32.0"
+prettytable-rs = "0.7.0"

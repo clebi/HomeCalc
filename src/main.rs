@@ -1,4 +1,6 @@
 extern crate clap;
+#[macro_use]
+extern crate prettytable;
 
 /// The loan module
 pub mod loan;
@@ -75,12 +77,18 @@ fn main() {
         let at = matches.value_of("info-at").unwrap().parse::<u32>().unwrap();
 
         println!(
-            "loan of {} during {} years with period of {} at {}%",
-            loan.capital, loan.years, loan.period, loan.interest_rate_year * 100_f32
+            "*** Information for a loan of {} during {} years with period of {} at {}% ***\n",
+            loan.capital,
+            loan.years,
+            loan.period,
+            loan.interest_rate_year * 100_f32
         );
-        println!("term price: {:.2}", loan.term_price());
-        println!("capital at {}: {:.2}", at, loan.capital_at(at));
-        println!("paid at {}: {:.2}", at, loan.paid(at));
-        println!("interest at {}: {:.2}", at, loan.interest_at(at));
+        let years_round = format!("{:.1}", at as f32 / loan.period as f32);
+        let mut loan_table = table!(["title", "at (periods)", "at (~years)", "value"]);
+        loan_table.add_row(row!["term price", "NONE", "NONE", loan.term_price()]);
+        loan_table.add_row(row!["capital paid", at, years_round, loan.capital_at(at)]);
+        loan_table.add_row(row!["paid", at, years_round, loan.paid(at)]);
+        loan_table.add_row(row!["interest paid", at, years_round, loan.interest_at(at)]);
+        loan_table.printstd();
     }
 }
