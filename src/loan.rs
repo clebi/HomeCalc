@@ -1,9 +1,9 @@
 /// A Loan
 pub struct Loan {
-    years: u8,
-    period: u8,
-    interest_rate_year: f32,
-    capital: u32,
+    pub years: u8,
+    pub period: u8,
+    pub interest_rate_year: f32,
+    pub capital: u32,
     term_price: f64,
 }
 
@@ -58,7 +58,7 @@ impl Loan {
     /// // Get the capital paid at 2 years
     /// let capital_at_2y = loan.capital_at(24);
     /// ```
-    pub fn capital_at(&self, n_period: i32) -> f64 {
+    pub fn capital_at(&self, n_period: u32) -> f64 {
         let inretest_rate_term = self.interest_rate_year as f64 / self.period as f64;
         let capital_n = ((1_f64 + inretest_rate_term).powf(n_period as f64) - 1_f64)
             / ((1_f64 + inretest_rate_term).powf(self.years as f64 * self.period as f64) - 1_f64);
@@ -75,7 +75,7 @@ impl Loan {
     /// // We have a loan with perodicity of 12 terms in a year
     /// let paid_at_1y = loan.paid_at(12);
     /// ```
-    pub fn paid(&self, n_period: i32) -> f64 {
+    pub fn paid(&self, n_period: u32) -> f64 {
         (self.term_price * n_period as f64 * 100_f64).round() / 100_f64
     }
 
@@ -89,7 +89,7 @@ impl Loan {
     /// // We have a loan with perodicity of 12 terms in a year
     /// let interest_at_4y = loan.interest_at(48);
     /// ```
-    pub fn interest_at(&self, n_period: i32) -> f64 {
+    pub fn interest_at(&self, n_period: u32) -> f64 {
         ((self.paid(n_period) - self.capital_at(n_period)) * 100_f64).round() / 100_f64
     }
 }
