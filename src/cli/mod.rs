@@ -58,21 +58,21 @@ pub fn loan_sub_command<'a, 'b>() -> App<'a, 'b> {
 
 pub fn execute_loan_info_at<'a>(matches: &ArgMatches<'a>) {
     let loan = Loan::new(
-        matches.value_of("years").unwrap().parse::<u8>().unwrap(),
+        matches.value_of(ARG_YEARS).unwrap().parse::<u8>().unwrap(),
         matches
-            .value_of("periodicity")
+            .value_of(ARG_PERIODICITY)
             .unwrap()
             .parse::<u8>()
             .unwrap(),
         matches
-            .value_of("interest-rate")
+            .value_of(ARG_INTEREST_RATE)
             .unwrap()
             .parse::<f32>()
             .unwrap() / 100_f32,
-        matches.value_of("capital").unwrap().parse::<u32>().unwrap(),
+        matches.value_of(ARG_CAPITAL).unwrap().parse::<u32>().unwrap(),
     );
     let at = matches
-        .value_of("n-period")
+        .value_of(ARG_N_PERIOD)
         .unwrap()
         .parse::<u32>()
         .unwrap();
