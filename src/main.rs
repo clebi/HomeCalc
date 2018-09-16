@@ -8,7 +8,8 @@ pub mod cli;
 pub mod loan;
 
 use clap::App;
-use cli::{SUB_LOAN, SUB_LOAN_INFO_AT, loan_sub_command, execute_loan_info_at};
+use cli::loan::{SUB_LOAN, loan_sub_command};
+use cli::loan::info::{SUB_LOAN_INFO_AT, execute_loan_info_at};
 
 fn main() {
     let app_matches = App::new("HomeCalc")
