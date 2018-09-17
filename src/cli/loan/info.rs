@@ -8,7 +8,7 @@ const ARG_PERIODICITY: &str = "periodicity";
 const ARG_INTEREST_RATE: &str = "interest-rate";
 const ARG_CAPITAL: &str = "capital";
 
-/// Create the loan info-at sub command
+/// Returns the loan info-at sub command
 pub fn loan_info_subcommand<'a, 'b>() -> App<'a, 'b> {
     SubCommand::with_name(SUB_LOAN_INFO_AT)
         .about("compute loans info for a point in time")

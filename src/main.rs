@@ -3,13 +3,12 @@ extern crate clap;
 extern crate prettytable;
 
 /// The CLI module
-pub mod cli;
+mod cli;
 /// The loan module
-pub mod loan;
+mod loan;
 
 use clap::App;
-use cli::loan::{SUB_LOAN, loan_sub_command};
-use cli::loan::info::{SUB_LOAN_INFO_AT, execute_loan_info_at};
+use cli::loan::{execute_loan_sub_command, loan_sub_command, SUB_LOAN};
 
 fn main() {
     let app_matches = App::new("HomeCalc")
@@ -20,10 +19,7 @@ fn main() {
         .get_matches();
 
     match app_matches.subcommand() {
-        (SUB_LOAN, Some(loan_matches)) => match loan_matches.subcommand() {
-            (SUB_LOAN_INFO_AT, Some(info_at_matches)) => execute_loan_info_at(info_at_matches),
-            _ => println!("*** No command found"),
-        },
+        (SUB_LOAN, Some(loan_matches)) => execute_loan_sub_command(loan_matches),
         _ => println!("*** No command found"),
     }
 }
