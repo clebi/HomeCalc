@@ -15,7 +15,7 @@ fn main() {
         .version("1.0")
         .author("Clément Bizeau")
         .about("Various computations about homes")
-        .subcommand(loan_sub_command())
+        .subcommands(loan_sub_command())
         .get_matches();
 
     match app_matches.subcommand() {
