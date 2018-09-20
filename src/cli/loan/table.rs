@@ -1,13 +1,10 @@
+use super::{common_loan_args, parse_common_loan_args};
 use clap::{App, Arg, ArgMatches, SubCommand};
 use loan::Loan;
 use prettytable::row::Row;
 
 pub const SUB_LOAN_TABLE: &str = "table";
 const ARG_EVERY_PERIOD: &str = "every-period";
-const ARG_YEARS: &str = "years";
-const ARG_PERIODICITY: &str = "periodicity";
-const ARG_INTEREST_RATE: &str = "interest-rate";
-const ARG_CAPITAL: &str = "capital";
 
 /// Returns the loan info-at sub command
 pub fn loan_table_subcommand<'a, 'b>() -> App<'a, 'b> {
@@ -18,35 +15,7 @@ pub fn loan_table_subcommand<'a, 'b>() -> App<'a, 'b> {
                 .takes_value(true)
                 .required(true)
                 .index(1),
-        ).arg(
-            Arg::with_name(ARG_YEARS)
-                .long(ARG_YEARS)
-                .short("y")
-                .takes_value(true)
-                .required(true)
-                .help("Number of years for the loan"),
-        ).arg(
-            Arg::with_name(ARG_PERIODICITY)
-                .long(ARG_PERIODICITY)
-                .short("p")
-                .takes_value(true)
-                .required(true)
-                .help("perodicity for the loan (by year)"),
-        ).arg(
-            Arg::with_name(ARG_INTEREST_RATE)
-                .long(ARG_INTEREST_RATE)
-                .short("i")
-                .takes_value(true)
-                .required(true)
-                .help("interest rate for the loan in percent"),
-        ).arg(
-            Arg::with_name(ARG_CAPITAL)
-                .long(ARG_CAPITAL)
-                .short("c")
-                .takes_value(true)
-                .required(true)
-                .help("capital to borrow"),
-        )
+        ).args(common_loan_args().as_slice())
 }
 
 /// Execute the work and print results for the info-at sub command
@@ -54,25 +23,7 @@ pub fn loan_table_subcommand<'a, 'b>() -> App<'a, 'b> {
 /// # Arguments
 /// * `matches` - The command matches to retrieve the paramters
 pub fn execute_loan_table<'a>(matches: &ArgMatches<'a>) {
-    let loan = Loan::new(
-        matches.value_of(ARG_YEARS).unwrap().parse::<u8>().unwrap(),
-        matches
-            .value_of(ARG_PERIODICITY)
-            .unwrap()
-            .parse::<u8>()
-            .unwrap(),
-        matches
-            .value_of(ARG_INTEREST_RATE)
-            .unwrap()
-            .parse::<f32>()
-            .unwrap()
-            / 100_f32,
-        matches
-            .value_of(ARG_CAPITAL)
-            .unwrap()
-            .parse::<u32>()
-            .unwrap(),
-    );
+    let loan = parse_common_loan_args(matches);
     let every = matches
         .value_of(ARG_EVERY_PERIOD)
         .unwrap()
