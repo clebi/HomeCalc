@@ -77,24 +77,40 @@ pub fn execute_invest_info_at<'a>(matches: &ArgMatches<'a>) {
             .parse::<u32>()
             .unwrap(),
     );
-    let periods = matches
+    let at = matches
         .value_of(ARG_PERIOD)
         .unwrap()
         .parse::<u32>()
         .unwrap();
-    let total_invest = invest.capital + invest.additions_total(periods);
-    let capital = invest.capital_at(periods);
-    println!("*** For an investment of {} and regular additions of {} per period at a interest rate of {} per year", 
+    let years_round = format!("{:.1}", at as f32 / invest.periodicity as f32);
+    let total_invest = invest.capital + invest.additions_total(at);
+    let capital = invest.capital_at(at);
+    println!("*** For an investment of {} and regular additions of {} per period at a interest rate of {} per year\n",
             invest.capital, invest.regular_addition, invest.yield_rate);
-    println!(
-        "* Investment amount of: {} with total additions of {}",
-        total_invest,
-        invest.additions_total(periods)
-    );
-    println!(
-        "* capital at {} will be: {}, interest earned: {}",
-        periods,
-        capital,
-        capital - total_invest as f64,
-    );
+    let mut invest_table = table!(["title", "at (periods)", "at (~years)", "value"]);
+    invest_table.add_row(row![
+        "total additions",
+        "NONE",
+        "NONE",
+        format!("{:.02}", invest.additions_total(at))
+    ]);
+    invest_table.add_row(row![
+        "total investment",
+        "NONE",
+        "NONE",
+        format!("{:.02}", total_invest)
+    ]);
+    invest_table.add_row(row![
+        "capital",
+        at,
+        years_round,
+        format!("{:.02}", invest.capital_at(at))
+    ]);
+    invest_table.add_row(row![
+        "interest earned",
+        at,
+        years_round,
+        format!("{:.02}", capital - total_invest as f64)
+    ]);
+    invest_table.printstd();
 }
