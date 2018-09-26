@@ -35,18 +35,18 @@ impl Investment {
         }
     }
 
-    fn yield_rate_period(&self) -> f64 {
-        self.yield_rate as f64 / self.periodicity as f64
+    fn yield_rate_period(&self) -> f32 {
+        self.yield_rate / self.periodicity as f32
     }
 
     fn capital_principal(&self, n_period: u32) -> f64 {
-        self.capital as f64 * (1_f64 + self.yield_rate_period()).powf(n_period as f64)
+        self.capital as f64 * (1_f64 + self.yield_rate_period() as f64).powf(n_period as f64)
     }
 
     fn capital_additions(&self, n_period: u32) -> f64 {
         self.regular_addition as f64
-            * (((1_f64 + self.yield_rate_period()).powf(n_period as f64) - 1_f64)
-                / self.yield_rate_period())
+            * (((1_f64 + self.yield_rate_period() as f64).powf(n_period as f64) - 1_f64)
+                / self.yield_rate_period() as f64)
     }
 
     /// Return the capital at a moment for an investment
@@ -71,5 +71,43 @@ impl Investment {
     /// * `n_period` - number of period
     pub fn additions_total(&self, n_period: u32) -> u32 {
         self.regular_addition * n_period
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    extern crate float_cmp;
+
+    use super::*;
+    use investment::tests::float_cmp::ApproxEq;
+
+    #[test]
+    fn test_yield_rate_period() {
+        let expected = 0.005_f32;
+        let invest = Investment::new(10000, 12, 0.06, 0);
+        assert!(
+            &expected.approx_eq(&invest.yield_rate_period(), 2.0 * ::std::f32::EPSILON, 2),
+            "expected: {}, actual: {}",
+            expected,
+            invest.yield_rate_period()
+        );
+    }
+
+    #[test]
+    fn test_capital_at() {
+        let expected = 43951.93_f64;
+        let invest = Investment::new(25000, 12, 0.04, 150);
+        assert!(
+            &expected.approx_eq(&invest.capital_at(72), 2.0 * ::std::f64::EPSILON, 200000000),
+            "expected: {}, actual: {}",
+            expected,
+            invest.capital_at(72)
+        );
+    }
+
+    #[test]
+    fn test_total_additions() {
+        let invest = Investment::new(25000, 12, 0.04, 234);
+        assert_eq!(19656, invest.additions_total(84));
     }
 }
