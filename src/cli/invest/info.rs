@@ -1,12 +1,8 @@
+use super::{common_invest_args, parse_common_invest_args};
 use clap::{App, Arg, ArgMatches, SubCommand};
-use investment::Investment;
 
 pub const SUB_INVEST_INFO_AT: &str = "info-at";
 const ARG_PERIOD: &str = "n-periods";
-const ARG_PERIODICITY: &str = "period";
-const ARG_YIELD_RATE: &str = "yield";
-const ARG_CAPITAL: &str = "capital";
-const ARG_REGULAR_ADDITION: &str = "addition";
 
 /// Returns the loan info-at sub command
 pub fn invest_info_subcommand<'a, 'b>() -> App<'a, 'b> {
@@ -17,36 +13,7 @@ pub fn invest_info_subcommand<'a, 'b>() -> App<'a, 'b> {
                 .takes_value(true)
                 .required(true)
                 .index(1),
-        ).arg(
-            Arg::with_name(ARG_PERIODICITY)
-                .long(ARG_PERIODICITY)
-                .short("p")
-                .takes_value(true)
-                .required(true)
-                .help("perodicity for the loan (by year)"),
-        ).arg(
-            Arg::with_name(ARG_YIELD_RATE)
-                .long(ARG_YIELD_RATE)
-                .short("r")
-                .takes_value(true)
-                .required(true)
-                .help("perodicity for the loan (by year)"),
-        ).arg(
-            Arg::with_name(ARG_CAPITAL)
-                .long(ARG_CAPITAL)
-                .short("c")
-                .takes_value(true)
-                .required(true)
-                .help("capital to borrow"),
-        ).arg(
-            Arg::with_name(ARG_REGULAR_ADDITION)
-                .long(ARG_REGULAR_ADDITION)
-                .short("a")
-                .takes_value(true)
-                .required(false)
-                .default_value("0")
-                .help("regular addition"),
-        )
+        ).args(common_invest_args().as_slice())
 }
 
 /// Execute the work and print results for the info-at sub command
@@ -54,29 +21,7 @@ pub fn invest_info_subcommand<'a, 'b>() -> App<'a, 'b> {
 /// # Arguments
 /// * `matches` - The command matches to retrieve the paramters
 pub fn execute_invest_info_at<'a>(matches: &ArgMatches<'a>) {
-    let invest = Investment::new(
-        matches
-            .value_of(ARG_CAPITAL)
-            .unwrap()
-            .parse::<u32>()
-            .unwrap(),
-        matches
-            .value_of(ARG_PERIODICITY)
-            .unwrap()
-            .parse::<u8>()
-            .unwrap(),
-        matches
-            .value_of(ARG_YIELD_RATE)
-            .unwrap()
-            .parse::<f32>()
-            .unwrap()
-            / 100_f32,
-        matches
-            .value_of(ARG_REGULAR_ADDITION)
-            .unwrap()
-            .parse::<u32>()
-            .unwrap(),
-    );
+    let invest = parse_common_invest_args(matches);
     let at = matches
         .value_of(ARG_PERIOD)
         .unwrap()

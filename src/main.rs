@@ -15,7 +15,7 @@ use cli::loan::{execute_loan_sub_command, loan_sub_command, SUB_LOAN};
 
 fn main() {
     let app_matches = App::new("HomeCalc")
-        .version("1.0")
+        .version("0.0.1")
         .author("Clément Bizeau")
         .about("Various computations about homes")
         .subcommands(loan_sub_command())
